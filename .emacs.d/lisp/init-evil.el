@@ -5,21 +5,16 @@
 (add-to-list 'load-path "~/.emacs.d/site-lisp/evil/lib")
 
 ;; @see https://bitbucket.org/lyro/evil/issue/511/let-certain-minor-modes-key-bindings
-(eval-after-load 'git-timemachine
-  '(progn
-     (evil-make-overriding-map git-timemachine-mode-map 'normal)
-     ;; force update evil keymaps after git-timemachine-mode loaded
-     (add-hook 'git-timemachine-mode-hook #'evil-normalize-keymaps)))
+(defmacro adjust-major-mode-keymap-with-evil (m &optional r)
+  `(eval-after-load (quote ,(if r r m))
+    '(progn
+       (evil-make-overriding-map ,(intern (concat m "-mode-map")) 'normal)
+       ;; force update evil keymaps after git-timemachine-mode loaded
+       (add-hook (quote ,(intern (concat m "-mode-hook"))) #'evil-normalize-keymaps))))
 
-(eval-after-load 'browse-kill-ring
-  '(progn
-     (evil-make-overriding-map browse-kill-ring-mode-map 'normal)
-     (add-hook 'browse-kill-ring-mode-hook #'evil-normalize-keymaps)))
-
-(eval-after-load 'etags-select
-  '(progn
-     (evil-make-overriding-map etags-select-mode-map 'normal)
-     (add-hook 'etags-select-mode-hook #'evil-normalize-keymaps)))
+(adjust-major-mode-keymap-with-evil "git-timemachine")
+(adjust-major-mode-keymap-with-evil "browse-kill-ring")
+(adjust-major-mode-keymap-with-evil "etags-select")
 
 (require 'evil)
 
@@ -427,12 +422,13 @@ If the character before and after CH is space or tab, CH is NOT slash"
   "cxo" 'org-clock-out ; `C-c C-x C-o'
   "cxr" 'org-clock-report ; `C-c C-x C-r'
   "mq" 'lookup-doc-in-man
-  "sg" 'w3m-google-by-filetype
-  "sf" 'w3m-search-financial-dictionary
-  "sq" 'w3m-stackoverflow-search
-  "sj" 'w3m-search-js-api-mdn
-  "sa" 'w3m-java-search
-  "sh" 'w3mext-hacker-search ; code search in all engines with firefox
+  "sgg" 'w3m-google-search
+  "sgf" 'w3m-google-by-filetype
+  "sgd" 'w3m-search-financial-dictionary
+  "sgq" 'w3m-stackoverflow-search
+  "sgj" 'w3m-search-js-api-mdn
+  "sga" 'w3m-java-search
+  "sgh" 'w3mext-hacker-search ; code search in all engines with firefox
   "qq" 'my-grep
   "gss" 'git-gutter:set-start-revision
   "gsh" 'git-gutter-reset-to-head-parent
@@ -587,8 +583,8 @@ If the character before and after CH is space or tab, CH is NOT slash"
   "xnd" 'narrow-to-defun
   "xnr" 'narrow-to-region
   "ycr" 'my-yas-reload-all
-  "wgc" 'wg-create-workgroup
-  "wgs" 'my-wg-switch-workgroup
+  "wgt" 'wg-create-workgroup
+  "wgg" 'my-wg-switch-workgroup
   "wf" 'popup-which-function)
 
 ;; change mode-line color by evil state

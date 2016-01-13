@@ -27,3 +27,5 @@ Downloads
 documents
 .cache
 temp
+.vim_runtime
+.vimrc
