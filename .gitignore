@@ -29,3 +29,6 @@ documents
 temp
 .vim_runtime
 .vimrc
+node_modules
+.gitignore
+write
